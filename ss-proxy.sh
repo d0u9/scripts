@@ -102,7 +102,7 @@ do_stop() {
     kill -9 $(cat $PID_FILE) 2>/dev/null
 
     echo "Restore iptables ..."
-    iptables-load < $BACKUP_FILE
+    iptables-restore < $BACKUP_FILE
 }
 
 case "$1" in
