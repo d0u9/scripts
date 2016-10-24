@@ -32,6 +32,7 @@ npm install --production
 cd $CWD
 
 echo "Cleaning ..."
+swapoff $TMP/swapfile
 rm -fr $TMP
 
 
