@@ -1,0 +1,9 @@
+[Unit]
+Description=shadowsocks local service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ss-local -c /home/doug/.dot/conf/shadowsocks/shadowsocks.json &
+
+[Install]
+WantedBy=graphical.target
