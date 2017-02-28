@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SS_CONFIG_FILE=/home/doug/.dot/conf/shadowsocks/ss-redir.json
+SS_CONFIG_FILE=$HOME/.dot/conf/shadowsocks/ss-redir.json
 
 NAME=ss-redir
 RUNTIME_DIR=/var/run/$NAME
