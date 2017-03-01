@@ -1,6 +1,13 @@
 #!/bin/bash
 
-SS_CONFIG_FILE=$HOME/.dot/conf/shadowsocks/ss-redir.json
+progname=$0
+name=ss-redir
+runtime_dir=/run/$name
+iptables_bkfile=$runtime_dir/iptables.backup
+pid_file=$runtime_dir/$name.pid
+
+
+SS_CONFIG_FILE=/home/doug/.dot/conf/shadowsocks/ss-redir.json
 
 NAME=ss-redir
 RUNTIME_DIR=/var/run/$NAME
@@ -9,31 +16,29 @@ PID_FILE=$RUNTIME_DIR/ss-redir.pid
 LOCAL_PORT=$(awk -F '[:," ]{1,}' '$2 ~ /local_port$/{print $3}' $SS_CONFIG_FILE)
 SERVER_IP=$(awk -F '[:," ]{1,}' '$2 ~ /server$/{print $3}' $SS_CONFIG_FILE)
 
-# Permission check
-if [[ $EUID -ne 0 ]]; then
-    echo "Permission denied, should be run as root"
-    exit 1
-fi
+# Print usage
+function usage() {
+   cat <<EOF
+Usage: $progname -f <config_file> {start|stop|status}
+EOF
+   exit 0
+}
 
-do_start() {
-    echo "Connect to $SERVER_IP, local port: $LOCAL_PORT"
-
-    # create new dir in /var/run
-    if [ ! -d "$RUNTIME_DIR" ]; then
-        echo "Create runtime dir ..."
-        mkdir "$RUNTIME_DIR"
-    fi
-
-    if kill -0 $(cat $PID_FILE) 2>/dev/null; then
-        echo "Already running, if you want to reload, execute $0 restart"
+# Check user's permission
+function check_permission() {
+    if [[ $EUID -ne 0 ]]; then
+        echo "Permission denied, should be run as root"
         exit 1
     fi
+}
 
-    echo "Backup iptables rules ..."
-    # backup iptables
-    iptables-save > $BACKUP_FILE
+# Check input parameter
+function check_parameter() {
+    [ -f $config_file ] || { echo "ERR: Can't find config file"; exit 1; }
+}
 
-    echo "Setup iptables ..."
+# Setup iptables rules
+function iptables_up() {
     # setup iptables
     # Create new chain
     iptables -t nat -N SHADOWSOCKS
@@ -72,15 +77,10 @@ do_start() {
     iptables -t mangle -A PREROUTING -j SHADOWSOCKS
     #iptables -t mangle -A OUTPUT -j SHADOWSOCKS
     #iptables -t mangle -A OUTPUT -j SHADOWSOCKS_MARK
-
-    # Start ss-redir
-    ss-redir -u -c $SS_CONFIG_FILE -f $PID_FILE
-
-    echo "OK !"
 }
 
-do_stop() {
-    echo "Stop ..."
+# Restore iptables rules
+function iptables_down() {
     iptables -t nat -F SHADOWSOCKS
     iptables -t nat -D OUTPUT -p tcp -j SHADOWSOCKS
     iptables -t nat -X SHADOWSOCKS
@@ -90,34 +90,81 @@ do_stop() {
     iptables -t mangle -X SHADOWSOCKS
     #iptables -t mangle -X SHADOWSOCKS_MARK
 
-    echo "Delete route rule ..."
-    while ip rule delete from all to all table 100 2>/dev/null
-    do true
+    # Delete route table
+    while ip rule delete from all to all table 100 2>/dev/null; do
+        :
     done
-
-    echo "Delete route table ..."
     ip route flush table 100
-
-    echo "Stop ss-redir"
-    kill -9 $(cat $PID_FILE) 2>/dev/null
-
-    echo "Restore iptables ..."
-    iptables-restore < $BACKUP_FILE
 }
 
-case "$1" in
-    start)
-        do_start
-        ;;
-    stop)
-        do_stop
-        ;;
-    restart|force-reload)
-        do_stop
-        do_start
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|restart|force-reload}" >&2
-        exit 3
-        ;;
+function do_status() {
+    if [ -f $pid_file ]; then
+        pid=$(cat $pid_file)
+        echo "Running pid = $pid"
+    else
+        echo "Not running"
+    fi
+}
+
+function do_start() {
+    if [ -f $pid_file ]; then
+        echo "ERR: Already running..."
+        exit 1
+    fi
+
+    ss_port=$(awk -F '[:," ]{1,}' '$2 ~ /local_port$/{print $3}' $config_file)
+    ss_ip=$(awk -F '[:," ]{1,}' '$2 ~ /server$/{print $3}' $config_file)
+
+    # crate run time dir
+    if [ ! -d $runtime_dir ]; then
+        mkdir -p $runtime_dir
+    fi
+
+    iptables-save > $iptables_bkfile
+
+    iptables_up
+
+    ss-redir -u -c $config_file -f $pid_file
+}
+
+function do_stop() {
+    if [ ! -f $pid_file ]; then
+        echo "ERR: Not running..."
+        exit 1
+    fi
+
+    # kill process
+    kill $(cat $pid_file) 2>/dev/null || { echo "stop unsuccessful"; exit 1; }
+    rm -fr $pid_file
+
+    iptables_down
+
+    # Restore iptables rules
+    iptables-restore < $iptables_bkfile
+}
+
+##
+# main
+##
+
+while getopts ":f:h" opt; do
+   case $opt in
+
+   f )  config_file=$OPTARG ;;
+   h )  usage ;;
+   \?)  usage ;;
+   esac
+done
+
+shift $(($OPTIND - 1))
+
+check_permission
+check_parameter
+
+case $1 in
+    "start"  ) do_start ;;
+    "stop"   ) do_stop ;;
+    "status" ) do_status ;;
+    *) usage ;;
 esac
+
