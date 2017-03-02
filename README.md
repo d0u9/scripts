@@ -4,6 +4,16 @@ Collection of my scripts.
 
 ---
 
+## ss-proxy.sh
+
+Helper script for setting up iptables.
+
+```
+Usage: ./ss-proxy.sh -f <config_file> {start|stop|status}
+```
+
+root privilege is needed to run this script.
+
 ---
 
 # License
