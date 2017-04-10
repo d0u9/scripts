@@ -7,7 +7,7 @@ iptables_bkfile=$runtime_dir/iptables.backup
 pid_file=$runtime_dir/$name.pid
 
 
-SS_CONFIG_FILE=/home/doug/.dot/conf/shadowsocks/ss-redir.json
+SS_CONFIG_FILE=/etc/trident/shadowsocks/ss-redir.json
 
 NAME=ss-redir
 RUNTIME_DIR=/var/run/$NAME
