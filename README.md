@@ -4,18 +4,12 @@ Collection of my scripts.
 
 ---
 
-## ss-proxy.sh
-
-Helper script for setting up iptables.
-
-```
-Usage: ./ss-proxy.sh -f <config_file> {start|stop|status}
-```
-
-root privilege is needed to run this script.
+[ss-redir-proxy](ss-redir-proxy): A TCP transparent proxy powered by ss-redir.
 
 ---
 
 # License
 
-All scripts are licensed under a [GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+All scripts are licensed under a [GNU General Public License, version 2][license].
+
+[license]: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
