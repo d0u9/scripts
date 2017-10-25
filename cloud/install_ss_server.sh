@@ -16,8 +16,8 @@ Usage: $progname [options] -c ss_config_file -k kcp_config_file
   -k    kcptun client config file
   -n    container name, default: ss_server
   -m    path to docker command, default: which docker
-  -p    ss port to be published, default is 7777
-  -u    kcp port to be published, default is 7877
+  -p    ss port to be published, default is 8388
+  -u    kcp port to be published, default is 4000
   -t    network the container connect to, default is bridge
 EOF
    exit 0
@@ -42,8 +42,8 @@ done
 docker_path=${docker_path:-$(which docker)}
 container_name=${container_name:-"ss_server"}
 net=${net:-"bridge"}
-ss_port=${ss_port:-"7777"}
-kcp_port=${kcp_port:-"7877"}
+ss_port=${ss_port:-"8388"}
+kcp_port=${kcp_port:-"4000"}
 
 if [ ! -f $ss_config_file ] || [ ! -f $kcp_config_file ]; then
     echo "Can't find configuration file, $config_file or $kcp_config_file"
