@@ -8,10 +8,10 @@ fi
 
 # Update Ubuntu packages
 apt-get update
-apt-get upgrade
+apt-get upgrade -y
 
 # Install packages to allow apt to use a repository over HTTPS
-apt-get install \
+apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
