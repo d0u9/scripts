@@ -13,8 +13,10 @@ echo "Scripts dir: $WWD"
 cd $HOME
 
 # Generate SSH key
-read -p "${RED}E-mail address for ssh-key generation${RESTCOR}: " readvar
-ssh-keygen -t rsa -b 4096 -C "$readvar"
+if [ ! -f $HOME/.ssh/id_rsa.pub ]; then
+    read -p "${RED}E-mail address for ssh-key generation${RESTCOR}: " readvar
+    ssh-keygen -t rsa -b 4096 -C "$readvar"
+fi
 
 # Waiting for ssh key adding
 echo ""
