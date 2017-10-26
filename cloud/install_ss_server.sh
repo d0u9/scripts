@@ -25,7 +25,7 @@ EOF
 
 [ "$#" = "0" ] && usage
 
-while getopts ":h:c:k:n:t:p:u" opt; do
+while getopts ":c:k:n:t:p:u:h" opt; do
     case $opt in
        c )  ss_config_file=$(realpath $OPTARG) ;;
        k )  kcp_config_file=$(realpath $OPTARG) ;;
@@ -45,8 +45,13 @@ net=${net:-"bridge"}
 ss_port=${ss_port:-"8388"}
 kcp_port=${kcp_port:-"4000"}
 
-if [ ! -f $ss_config_file ] || [ ! -f $kcp_config_file ]; then
-    echo "Can't find configuration file, $config_file or $kcp_config_file"
+if [ -z $ss_config_file ] || [ ! -f $ss_config_file ]; then
+    echo "Can't find shadowsocks configuration, specify it by -c option"
+    exit 1
+fi
+
+if [ -z $kcp_config_file ] || [ ! -f $kcp_config_file ]; then
+    echo "Can't find kcp configuration, specify it by -k option"
     exit 1
 fi
 
