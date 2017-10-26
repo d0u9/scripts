@@ -6,6 +6,7 @@ set -e
 export RED=$(tput setaf 1)
 export GREEN=$(tput setaf 2)
 export RESTCOR=$(tput sgr0)
+export CORES=$(lscpu | awk '$0 ~ /^CPU\(s\)/{print $2}')
 export WWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Scripts dir: $WWD"
@@ -35,10 +36,22 @@ export CONF_DIR=$DOT_DIR/conf
 git clone git@github.com:d0u9/private.git
 export PRIVATE_DIR=$DOT_DIR/private
 
-# install config files
+# Install config files
 bash -c "sudo $CONF_DIR/tri-install.sh"
+
+# Create necessary dirs
+mkdir -p $HOME/Apps/{bin,cellar,lib,share}
+export APPS_BIN_DIR=$HOME/Apps/bin
+export APPS_CELLAR_DIR=$HOME/Apps/bin
+
+mkdir -p $HOME/GitHub
+export GITHUB_DIR=$HOME/GitHub
 
 # Install oh-my-zsh
 cd "$WWD"
 bash oh-my-zsh.sh
+
+# Install tmux
+cd "$WWD"
+bash t
 

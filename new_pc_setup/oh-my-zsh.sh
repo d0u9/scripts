@@ -12,3 +12,7 @@ echo "${RED}Please press Ctrl-D when installation complete.${RESTCOR}"
 cd $DOT_DIR
 ./install.sh zsh
 
+echo "{GREEN}oh-my-zsh installed !{RESTCOR}"
+
+cd "$cwd"
+

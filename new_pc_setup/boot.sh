@@ -6,7 +6,8 @@ dir="$(pwd)"
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y git zsh gcc g++ automake autoconf curl vim             \
-                        libtool libtool-bin autoconf pkg-config unzip
+                        libtool libtool-bin autoconf pkg-config unzip          \
+                        libevent-dev
 
 cd /tmp
 git clone https://github.com/d0u9/scripts.git
