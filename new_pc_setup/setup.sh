@@ -8,10 +8,12 @@ export GREEN=$(tput setaf 2)
 export RESTCOR=$(tput sgr0)
 export WWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+echo "Scripts dir: $WWD"
+
 cd $HOME
 
 # Generate SSH key
-read -p "${RED}E-mail address for ssh-key generation${RESTCOR}" readvar
+read -p "${RED}E-mail address for ssh-key generation${RESTCOR}: " readvar
 ssh-keygen -t rsa -b 4096 -C "$readvar"
 
 # Waiting for ssh key adding
