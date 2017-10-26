@@ -10,7 +10,7 @@ apt-get install -y git zsh gcc g++ automake autoconf curl vim                  \
 
 cd /tmp
 git clone https://github.com/d0u9/scripts.git
-cd scripts/
+cd scripts/new_pc_setup
 
 bash -c 'bash setup.sh'
 
