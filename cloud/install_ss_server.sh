@@ -84,4 +84,23 @@ $docker_path run \
     -p $kcp_port:$kport/udp \
     d0u9/shadowsocks-libev
 
+# Auto start for systemd
+if [ ! -f /etc/docker-$container_name.service ]; then
+    cat << EOF > /etc/systemd/system/docker-$container_name.service
+[Unit]
+Description=ss-local client powered by shadowscoks-libev
+Requires=docker.service
+After=docker.service
+[Service]
+Restart=always
+ExecStart=$docker_path start -a $container_name
+ExecStop=$docker_path stop -t 2 $container_name
+[Install]
+WantedBy=default.target
+EOF
 
+    if [ "$?" != "0" ]; then
+        echo "ERROR: can't write docker-$container_name.service file"
+        exit 1
+    fi
+fi
