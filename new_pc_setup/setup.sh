@@ -36,9 +36,10 @@ git clone git@github.com:d0u9/private.git
 export PRIVATE_DIR=$DOT_DIR/private
 
 # install config files
-cd $CONF_DIR
+cd "$CONF_DIR"
 bash tri-install.sh
 
 # Install oh-my-zsh
+cd "$WWD"
 bash oh-my-zsh.sh
 
