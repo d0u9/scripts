@@ -26,7 +26,7 @@ ln -s ../cellar/tmux/bin/tmux .
 cd "$DOT_DIR"
 ./install.sh tmux
 
-echo "{GREEN}tmux installed !{RESTCOR}"
+echo "${GREEN}tmux installed !${RESTCOR}"
 
 cd "$cwd"
 
