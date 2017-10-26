@@ -12,6 +12,10 @@ cd /tmp
 git clone https://github.com/d0u9/scripts.git
 cd scripts/new_pc_setup
 
-bash -c 'bash setup.sh'
+# Run the real setup script
+bash setup.sh
 
 cd "$dir"
+rm -fr /tmp/scripts
+
+echo "------------------------- Done --------------------------"
