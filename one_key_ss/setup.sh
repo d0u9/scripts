@@ -52,7 +52,8 @@ jq '.target="127.0.0.1:'"$ss_port"'" | .listen=":'"$kcp_port"'"' \
 docker network create tri_pri
 
 compose_dir=$(mktemp -d)
-sed -e "s/ss_port/$ss_port/g;s/kcp_port/$kcp_port/g" docker-compose.yml > "$compose_dir/docker-compose.yml"
+sed -e "s/ss_port/$ss_port/g;s/kcp_port/$kcp_port/g" \
+    "$SCRIPTS_DIR/one_key_ss/docker-compose.yml" > "$compose_dir/docker-compose.yml"
 
 cd "$compose_dir"
 docker-compose up -d
