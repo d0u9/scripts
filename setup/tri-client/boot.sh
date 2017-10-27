@@ -14,7 +14,7 @@ git clone https://github.com/d0u9/private.git
 
 git clone https://github.com/d0u9/scripts.git
 
-cd private/new_pc_setup
+cd private/setup/tri-client
 
 # Run the real setup script
 bash setup.sh
