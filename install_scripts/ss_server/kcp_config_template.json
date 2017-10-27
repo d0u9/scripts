@@ -2,7 +2,9 @@
     "target": "127.0.0.1:8388",
     "listen": ":4000",
     "mode": "fast2",
-    "MTU": 1400,
-    "SndWnd": 2048,
-    "RcvWnd": 2048
+    "mtu": 1400,
+    "sndwnd": 2048,
+    "rcvwnd": 2048,
+    "crypt": "aes",
+    "key": "CZ@2270272"
 }

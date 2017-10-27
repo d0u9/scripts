@@ -14,7 +14,7 @@ green=$(tput setaf 2)
 restcor=$(tput sgr0)
 
 # Update
-apt-get update && apt-get upgrade
+apt-get update && apt-get upgrade -y
 apt-get install -y jq
 
 # Clone repo
@@ -41,11 +41,16 @@ echo -e "\nConfig files will be placed in /etc/trident"
 mkdir -p /etc/trident
 
 read -p "${green}Shadowsocks port:${restcor} " ss_port
-read -p "${green}KcpTun port:${restcor} " kcp_port
+echo "${green}Shadowsocks password:${restcor}"
+read -s ss_pass
 
-jq '.server_port='"$ss_port" \
+read -p "${green}KcpTun port:${restcor} " kcp_port
+echo "${green}KcpTun password:${restcor}"
+read -s kcp_pass
+
+jq '.server_port='"$ss_port"' | .password="'"$ss_pass"'"' \
     "$SCRIPTS_DIR/install_scripts/ss_server/ss_config_template.json" > /etc/trident/ss_config.json
-jq '.target="127.0.0.1:'"$ss_port"'" | .listen=":'"$kcp_port"'"' \
+jq '.target="127.0.0.1:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_pass"'"' \
     "$SCRIPTS_DIR/install_scripts/ss_server/kcp_config_template.json" > /etc/trident/kcp_config.json
 
 # Compose containers
