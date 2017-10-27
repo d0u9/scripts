@@ -1,8 +1,6 @@
-# cloud
+# install_scripts
 
-Scripts used to setup cloud server. 
-
-**root permission is needed to run scripts included in this directory.**
+Scripts used to install apps.
 
 ---
 
