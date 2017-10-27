@@ -24,13 +24,14 @@ cd scripts
 export SCRIPTS_DIR=$(pwd)
 
 # Basic server setup
-bash "$SCRIPTS_DIR/install_scripts/cloud_basic_setup.sh"
+source "$SCRIPTS_DIR/install_scripts/cloud_basic_setup.sh"
 
 # Install fail2ban
 bash "$SCRIPTS_DIR/install_scripts/fail2ban/install_fail2ban.sh"
 
 # Install docker
 bash "$SCRIPTS_DIR/install_scripts/install_docker_ubuntu.sh"
+usermod -a -G docker $NEWUSER
 
 # Install docker-compose
 curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
