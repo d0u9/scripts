@@ -27,4 +27,5 @@ useradd -s /usr/sbin/nologin -M -u 2001 -U ghost
 sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
 systemctl restart sshd.service
 
+export NEWUSER=$user
 
