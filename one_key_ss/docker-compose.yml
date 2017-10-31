@@ -9,14 +9,27 @@ services:
      - tri_private
     ports:
      - 0.0.0.0:ss_port:ss_port/tcp
-     - 0.0.0.0:kcp_port:kcp_port/udp
     volumes:
      - /etc/trident/ss_config.json:/ss.json:ro
-     - /etc/trident/kcp_config.json:/kcp.json:ro
     environment:
-     - ENABLE_KCP=yes
      - CMD=server
      - SS_CONFIG_FILE=/ss.json
+
+  kcp_server:
+    image: d0u9/kcptun
+    container_name: kcp_server
+    hostname: kcp_server
+    restart: always
+    depends_on:
+     - ss_server
+    networks:
+     - tri_private
+    ports:
+     - 0.0.0.0:kcp_port:kcp_port/udp
+    volumes:
+     - /etc/trident/kcp_config.json:/kcp.json:ro
+    environment:
+     - CMD=server
      - KCP_CONFIG_FILE=/kcp.json
 
 networks:
