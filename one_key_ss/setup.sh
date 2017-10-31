@@ -51,7 +51,7 @@ read -s kcp_pass
 
 jq '.server_port='"$ss_port"' | .password="'"$ss_pass"'"' \
     "$SCRIPTS_DIR/install_scripts/ss_server/ss_config_template.json" > /etc/trident/ss_config.json
-jq '.target="127.0.0.1:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_pass"'"' \
+jq '.target="ss_server:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_pass"'"' \
     "$SCRIPTS_DIR/install_scripts/ss_server/kcp_config_template.json" > /etc/trident/kcp_config.json
 
 # Compose containers
