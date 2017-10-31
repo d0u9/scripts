@@ -15,7 +15,7 @@ restcor=$(tput sgr0)
 
 # Update
 apt-get update && apt-get upgrade -y
-apt-get install -y jq
+apt-get install -y jq rng-tools
 
 # Clone repo
 cd /tmp
