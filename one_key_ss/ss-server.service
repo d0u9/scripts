@@ -1,0 +1,14 @@
+[Unit]
+Description=Shadowsocks-libev Server Service
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+User=nobody
+Group=nogroup
+LimitNOFILE=32768
+ExecStart=/usr/bin/ss-server -c /etc/trident/ss_config.json
+
+[Install]
+WantedBy=multi-user.target

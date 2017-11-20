@@ -15,7 +15,7 @@ restcor=$(tput sgr0)
 
 # Update
 apt-get update && apt-get upgrade -y
-apt-get install -y jq rng-tools
+apt-get install -y jq rng-tools shadowsocks-libev
 
 # Clone repo
 cd /tmp
@@ -28,14 +28,6 @@ source "$SCRIPTS_DIR/install_scripts/cloud_basic_setup.sh"
 
 # Install fail2ban
 bash "$SCRIPTS_DIR/install_scripts/fail2ban/install_fail2ban.sh"
-
-# Install docker
-bash "$SCRIPTS_DIR/install_scripts/install_docker_ubuntu.sh"
-usermod -a -G docker $NEWUSER
-
-# Install docker-compose
-curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
 
 # Create config files
 echo -e "\nConfig files will be placed in /etc/trident"
@@ -50,18 +42,29 @@ echo "${green}KcpTun password:${restcor}"
 read -s kcp_pass
 
 jq '.server_port='"$ss_port"' | .password="'"$ss_pass"'"' \
-    "$SCRIPTS_DIR/install_scripts/ss_server/ss_config_template.json" > /etc/trident/ss_config.json
+    "$SCRIPTS_DIR/one_key_ss/ss_config_template.json" > /etc/trident/ss_config.json
 jq '.target="ss_server:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_pass"'"' \
-    "$SCRIPTS_DIR/install_scripts/ss_server/kcp_config_template.json" > /etc/trident/kcp_config.json
+    "$SCRIPTS_DIR/one_key_ss/kcp_config_template.json" > /etc/trident/kcp_config.json
 
-# Compose containers
-docker network create tri_pri
 
-compose_dir=$(mktemp -d)
-sed -e "s/ss_port/$ss_port/g;s/kcp_port/$kcp_port/g" \
-    "$SCRIPTS_DIR/one_key_ss/docker-compose.yml" > "$compose_dir/docker-compose.yml"
+# Install kcptun
+cd /tmp
+kcptun_version="20171113"
+wget "https://github.com/xtaci/kcptun/releases/download/v20171113/kcptun-linux-amd64-$kcptun_version.tar.gz" -O kcptun.tar.gz
+tar -xf kcptun.tar.gz
+mv server_linux_amd64 /usr/bin/kcp-server
+mv client_linux_amd64 /usr/bin/kcp-client
+cp "$SCRIPTS_DIR/one_key_ss/kcp-server.service" /etc/systemd/system/
 
-cd "$compose_dir"
-docker-compose up -d
+# Install SS
+cp "$SCRIPTS_DIR/one_key_ss/ss-server.service" /etc/systemd/system/
 
+# Autostart
+systemctl daemon-reload
+systemctl enable ss-server.service
+systemctl enable kcp-server.service
+
+# Start
+systemctl start ss-server.service
+systemctl start kcp-server.service
 

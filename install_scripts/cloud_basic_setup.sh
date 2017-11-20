@@ -14,14 +14,14 @@ restcor=$(tput sgr0)
 
 # Create a new user
 read -p "${green}Add a new user, select a username:${restcor} " user
-useradd -m -s /bin/bash -G sudo "$user"
+grep $user /etc/passwd || useradd -m -s /bin/bash -G sudo "$user"
 
 echo "${green}set new password for user $user.${restcor}"
 passwd "$user"
 
 # Add other users
-useradd -s /usr/sbin/nologin -M -u 5000 -U public
-useradd -s /usr/sbin/nologin -M -u 2001 -U ghost
+grep public /etc/passwd || useradd -s /usr/sbin/nologin -M -u 5000 -U public
+grep blog /etc/passwd || useradd -s /usr/sbin/nologin -M -u 2001 -U blog
 
 # Disable root login
 sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
