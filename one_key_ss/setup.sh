@@ -43,7 +43,7 @@ read -s kcp_pass
 
 jq '.server_port='"$ss_port"' | .password="'"$ss_pass"'"' \
     "$SCRIPTS_DIR/one_key_ss/ss_config_template.json" > /etc/trident/ss_config.json
-jq '.target="ss_server:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_pass"'"' \
+jq '.target="localhost:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_pass"'"' \
     "$SCRIPTS_DIR/one_key_ss/kcp_config_template.json" > /etc/trident/kcp_config.json
 
 
