@@ -49,7 +49,7 @@ jq '.target="localhost:'"$ss_port"'" | .listen=":'"$kcp_port"'" | .key="'"$kcp_p
 
 # Install kcptun
 cd /tmp
-kcptun_version="20171113"
+kcptun_version="20171201"
 wget "https://github.com/xtaci/kcptun/releases/download/v20171113/kcptun-linux-amd64-$kcptun_version.tar.gz" -O kcptun.tar.gz
 tar -xf kcptun.tar.gz
 mv server_linux_amd64 /usr/bin/kcp-server
